@@ -6,5 +6,10 @@
 		{
 			return value == null || value.Trim().Length == 0;
 		}
+
+		public string defaultString(string value)
+		{
+			return value == null ? "" : value;
+		}
 	}
 }
