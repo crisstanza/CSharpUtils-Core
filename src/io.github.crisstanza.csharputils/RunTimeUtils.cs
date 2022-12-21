@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace io.github.crisstanza.csharputils
 {
@@ -26,19 +29,22 @@ namespace io.github.crisstanza.csharputils
 			process.StartInfo.UseShellExecute = false;
 			process.StartInfo.RedirectStandardOutput = true;
 			process.StartInfo.RedirectStandardError = true;
+			// process.StartInfo.RedirectStandardInput = true;
 			if (workingDirectory != null)
 			{
 				process.StartInfo.WorkingDirectory = workingDirectory;
 			}
 			process.Start();
+			StringBuilder output = new StringBuilder();
+			ConsumeReader(process.StandardOutput, output).Wait();
 			process.WaitForExit();
 			if (process.ExitCode == 0)
 			{
-				string commandOutput = process.StandardOutput.ReadToEnd();
+				// string commandOutput = process.StandardOutput.ReadToEnd();
 				return new ExecResult()
 				{
 					ExitCode = process.ExitCode,
-					Output = commandOutput
+					Output = output.ToString() // commandOutput
 				};
 			}
 			else
@@ -47,8 +53,17 @@ namespace io.github.crisstanza.csharputils
 				return new ExecResult()
 				{
 					ExitCode = process.ExitCode,
-					Output = commandErrorOutput
+					Output = output.ToString() + Environment.NewLine + commandErrorOutput
 				};
+			}
+		}
+
+		private async Task ConsumeReader(TextReader reader, StringBuilder acc)
+		{
+			string text;
+			while ((text = await reader.ReadLineAsync()) != null)
+			{
+				acc.AppendLine(text);
 			}
 		}
 
