@@ -116,7 +116,14 @@ namespace io.github.crisstanza.csharputils.service
 							}
 						}
 					}
-					output = (HttpListenerUtils.OutputBody)method.Invoke(toBeInvoked, toBePassedAsArgument);
+					try
+					{
+						output = (HttpListenerUtils.OutputBody)method.Invoke(toBeInvoked, toBePassedAsArgument);
+					}
+					catch (Exception exc)
+					{
+						output = this.httpListenerUtils.DefaultErrorOutputBody(exc.ToString());
+					}
 					if (output.Headers != null)
 					{
 						for (int i = 0; i < output.Headers.Count; i++)

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
 
@@ -100,6 +99,15 @@ namespace io.github.crisstanza.csharputils
 				Body = Encoding.UTF8.GetBytes(output),
 				ContentType = MediaTypeNamesConstants.TEXT_PLAIN,
 				Status = HttpStatusCode.OK
+			};
+		}
+		public OutputBody DefaultErrorOutputBody(string output)
+		{
+			return new OutputBody()
+			{
+				Body = Encoding.UTF8.GetBytes(output),
+				ContentType = MediaTypeNamesConstants.TEXT_PLAIN,
+				Status = HttpStatusCode.InternalServerError
 			};
 		}
 

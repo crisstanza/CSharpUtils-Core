@@ -11,5 +11,9 @@
 		{
 			return value == null ? "" : value;
 		}
+		public string[] defaultArray(string[] value)
+		{
+			return value == null ? new string[0] : value;
+		}
 	}
 }
