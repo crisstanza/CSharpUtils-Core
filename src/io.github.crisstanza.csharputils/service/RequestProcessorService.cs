@@ -154,12 +154,22 @@ namespace io.github.crisstanza.csharputils.service
 
 		public HttpListenerUtils.OutputBody ServeLocalFile(string pagePath)
 		{
-			string contents = File.ReadAllText(pagePath);
-			contents = ResolveVariables(contents);
+			string contentType = this.httpListenerUtils.GetContentType(pagePath);
+			byte[] body;
+			if (this.httpListenerUtils.IsBinaryContentType(contentType))
+			{
+				body = File.ReadAllBytes(pagePath);
+			}
+			else
+			{
+				string contents = File.ReadAllText(pagePath);
+				contents = ResolveVariables(contents);
+				body = Encoding.UTF8.GetBytes(contents);
+			}
 			HttpListenerUtils.OutputBody output = new HttpListenerUtils.OutputBody()
 			{
-				Body = Encoding.UTF8.GetBytes(contents),
-				ContentType = this.httpListenerUtils.GetContentType(pagePath),
+				Body = body,
+				ContentType = contentType,
 				Status = HttpStatusCode.OK
 			};
 			return output;

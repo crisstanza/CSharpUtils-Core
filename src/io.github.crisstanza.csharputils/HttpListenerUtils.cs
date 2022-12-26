@@ -144,7 +144,15 @@ namespace io.github.crisstanza.csharputils
 			output.Close();
 		}
 
-		internal string GetContentType(string pagePath)
+		public bool IsBinaryContentType(string contentType) {
+			if (contentType == null)
+			{
+				return false;
+			}
+			return !contentType.StartsWith("text/");
+		}
+
+		public string GetContentType(string pagePath)
 		{
 			if (pagePath.EndsWith(".js"))
 			{
@@ -153,6 +161,10 @@ namespace io.github.crisstanza.csharputils
 			else if (pagePath.EndsWith(".css"))
 			{
 				return MediaTypeNamesConstants.TEXT_CSS;
+			}
+			else if (pagePath.EndsWith(".png"))
+			{
+				return MediaTypeNamesConstants.IMAGE_PNG;
 			}
 			return null;
 		}

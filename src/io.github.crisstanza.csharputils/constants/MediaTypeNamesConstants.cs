@@ -8,6 +8,7 @@
 		public static readonly string TEXT_PLAIN = "text/plain";
 		public static readonly string TEXT_JAVASCRIPT = "text/javascript";
 		public static readonly string IMAGE_ICON = "image/x-icon";
+		public static readonly string IMAGE_PNG = "image/png";
 		public static readonly string APPLICATION_OCTET_STREAM = "application/octet-stream";
 	}
 }
