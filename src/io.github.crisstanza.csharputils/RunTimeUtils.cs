@@ -9,6 +9,17 @@ namespace io.github.crisstanza.csharputils
 {
 	public class RunTimeUtils
 	{
+		private bool debug;
+
+		public RunTimeUtils() : this(false)
+		{
+		}
+
+		public RunTimeUtils(bool debug)
+		{
+			this.debug = debug;
+		}
+
 		public class ExecResult
 		{
 			public int ExitCode { get; set; }
@@ -22,20 +33,35 @@ namespace io.github.crisstanza.csharputils
 
 		public ExecResult Exec(string executable, string arguments, string workingDirectory)
 		{
-			Log(workingDirectory, executable, arguments);
+			return this.Exec(executable, arguments, workingDirectory, null);
+		}
+
+		public ExecResult Exec(string executable, string arguments, string workingDirectory, string answer)
+		{
+			if (this.debug)
+			{
+				Log(workingDirectory, executable, arguments);
+			}
 			Process process = new Process();
 			process.StartInfo.FileName = executable;
 			process.StartInfo.Arguments = arguments;
 			process.StartInfo.UseShellExecute = false;
 			process.StartInfo.RedirectStandardOutput = true;
 			process.StartInfo.RedirectStandardError = true;
-			// process.StartInfo.RedirectStandardInput = true;
+			if (answer != null)
+			{
+				process.StartInfo.RedirectStandardInput = true;
+			}
 			if (workingDirectory != null)
 			{
 				process.StartInfo.WorkingDirectory = workingDirectory;
 			}
 			process.Start();
 			StringBuilder output = new StringBuilder();
+			if (answer != null)
+			{
+				process.StandardInput.WriteLine(answer);
+			}
 			ConsumeReader(process.StandardOutput, output).Wait();
 			process.WaitForExit();
 			if (process.ExitCode == 0)
@@ -69,7 +95,10 @@ namespace io.github.crisstanza.csharputils
 
 		public int Run(string executable, string arguments)
 		{
-			Log(null, executable, arguments);
+			if (this.debug)
+			{
+				Log(null, executable, arguments);
+			}
 			Thread thread = new Thread(() =>
 			{
 				Process process = new Process();
@@ -78,8 +107,20 @@ namespace io.github.crisstanza.csharputils
 				process.StartInfo.UseShellExecute = false;
 				process.StartInfo.RedirectStandardOutput = true;
 				process.StartInfo.RedirectStandardError = true;
-				process.OutputDataReceived += (sender, args) => Console.WriteLine("Output: {0}", args.Data);
-				process.ErrorDataReceived += (sender, args) => Console.WriteLine("Error: {0}", args.Data);
+				process.OutputDataReceived += (sender, args) =>
+				{
+					if (debug)
+					{
+						Console.WriteLine("Output: {0}", args.Data);
+					}
+				};
+				process.ErrorDataReceived += (sender, args) =>
+				{
+					if (debug)
+					{
+						Console.WriteLine("Error: {0}", args.Data);
+					}
+				};
 				process.Start();
 				process.BeginOutputReadLine();
 				process.BeginErrorReadLine();
