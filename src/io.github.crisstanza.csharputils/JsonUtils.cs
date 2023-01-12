@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace io.github.crisstanza.csharputils
 {
@@ -20,7 +21,10 @@ namespace io.github.crisstanza.csharputils
 
 		public string Serialize<T>(T jsonObject)
 		{
-			JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = this.debug, IgnoreNullValues = !this.debug };
+			JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = this.debug };
+			if (!this.debug) {
+				options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+			}
 			string jsonString = JsonSerializer.Serialize<T>(jsonObject, options);
 			return jsonString;
 		}
