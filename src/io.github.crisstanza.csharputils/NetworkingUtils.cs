@@ -7,31 +7,58 @@ namespace io.github.crisstanza.csharputils
 {
     public class NetworkingUtils
     {
+        private RunTimeUtils runTimeUtils;
+
+        public NetworkingUtils()
+        {
+            this.runTimeUtils = new RunTimeUtils();
+        }
+
         public IPAddress GetLocalAddress(IPAddress subnetMask)
         {
-			// TODO (Cris Stanza): check command: hostname -I (see firs result)
             IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (IPAddress ip in host.AddressList)
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
-					if (ip.ToString().StartsWith("192.")) {
-                    	return ip;
-					}
+                    if (ip.ToString().StartsWith("192."))
+                    {
+                        return ip;
+                    }
                 }
             }
-            foreach (NetworkInterface adapter in NetworkInterface.GetAllNetworkInterfaces())
+            NetworkInterface[] networkInterfaces;
+            try
             {
-                foreach (UnicastIPAddressInformation unicastIPAddressInformation in adapter.GetIPProperties().UnicastAddresses)
+                networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+            }
+            catch (NetworkInformationException exc)
+            {
+                Console.WriteLine(exc.ToString());
+                networkInterfaces = null;
+            }
+            if (networkInterfaces != null)
+            {
+                foreach (NetworkInterface adapter in networkInterfaces)
                 {
-                    if (unicastIPAddressInformation.Address.AddressFamily == AddressFamily.InterNetwork)
+                    foreach (UnicastIPAddressInformation unicastIPAddressInformation in adapter.GetIPProperties().UnicastAddresses)
                     {
-                        if (unicastIPAddressInformation.IPv4Mask.Equals(subnetMask))
+                        if (unicastIPAddressInformation.Address.AddressFamily == AddressFamily.InterNetwork)
                         {
-                            return unicastIPAddressInformation.Address;
+                            if (unicastIPAddressInformation.IPv4Mask.Equals(subnetMask))
+                            {
+                                return unicastIPAddressInformation.Address;
+                            }
                         }
                     }
                 }
+            }
+            RunTimeUtils.ExecResult hosts = this.runTimeUtils.Exec("hostname", "-I");
+            if (hosts.ExitCode == 0)
+            {
+                String[] parts = hosts.Output.Split(' ');
+                String ip = parts[0];
+                return IPAddress.Parse(ip);
             }
             return null;
         }
