@@ -10,7 +10,6 @@ namespace io.github.crisstanza.csharputils
 		{
 			return Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + Path.DirectorySeparatorChar;
 		}
-
 		public string[] ListFolders(string home)
 		{
 			return Directory.GetDirectories(home);
@@ -47,5 +46,9 @@ namespace io.github.crisstanza.csharputils
 		{
 			return File.Exists(path);
 		}
-	}
+        public bool ExistsFolder(string path)
+        {
+            return Directory.Exists(path);
+        }
+    }
 }

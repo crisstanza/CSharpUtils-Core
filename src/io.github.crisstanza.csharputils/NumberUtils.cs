@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-
-namespace io.github.crisstanza.csharputils
+﻿namespace io.github.crisstanza.csharputils
 {
 	public class NumberUtils
 	{
