@@ -5,7 +5,7 @@
 		<RootNamespace></RootNamespace>
 		<Authors>Cris Stanza</Authors>
 		<Company>Cris Stanza</Company>
-		<Version>0.7.1.0</Version>
+		<Version>0.7.1.1</Version>
 		<Description>Helper classes (utility methods) for C# (.NET Core).</Description>
 	</PropertyGroup>
 

@@ -1,4 +1,6 @@
-﻿namespace io.github.crisstanza.csharputils
+﻿using System;
+
+namespace io.github.crisstanza.csharputils
 {
 	public class StringUtils
 	{
@@ -14,6 +16,11 @@
 		public string[] defaultArray(string[] value)
 		{
 			return value == null ? new string[0] : value;
+		}
+
+		public bool NotStartsWith(string value, string prefix)
+		{
+			return value == null || !value.StartsWith(prefix);
 		}
 	}
 }
