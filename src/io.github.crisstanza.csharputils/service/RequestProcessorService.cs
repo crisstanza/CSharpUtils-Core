@@ -87,7 +87,7 @@ namespace io.github.crisstanza.csharputils.service
 							if (parameters.Length > 0)
 							{
 								ParameterInfo parameter = parameters[0];
-								Type type = parameter.ParameterType;
+								Type parameterType = parameter.ParameterType;
 								string inputString = httpListenerUtils.GetPostParameterOrRequestInput(context.Request, "body");
 								if (stringUtils.IsBlank(inputString))
 								{
@@ -95,7 +95,7 @@ namespace io.github.crisstanza.csharputils.service
 								}
 								else
 								{
-									Object inputJson = jsonUtils.Deserialize(inputString, type);
+									Object inputJson = jsonUtils.Deserialize(inputString, parameterType);
 									toBePassedAsArgument = new object[] { inputJson };
 								}
 							}
@@ -112,7 +112,23 @@ namespace io.github.crisstanza.csharputils.service
 							{
 								ParameterInfo parameter = parameters[i];
 								string parameterName = parameter.Name;
-								toBePassedAsArgument[i] = queryString[parameterName];
+								Type parameterType = parameter.ParameterType;
+								String value = queryString[parameterName];
+								if (parameterType == typeof(Nullable<int>))
+								{
+									if (value == null || this.stringUtils.IsBlank(value))
+									{
+										toBePassedAsArgument[i] = (int?)null;
+									}
+									else
+									{
+										toBePassedAsArgument[i] = Convert.ToInt32(value);
+									}
+								}
+								else
+								{
+									toBePassedAsArgument[i] = value;
+								}
 							}
 						}
 					}
