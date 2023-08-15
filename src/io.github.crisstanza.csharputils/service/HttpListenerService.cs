@@ -42,6 +42,7 @@ namespace io.github.crisstanza.csharputils.service
 			}
 			Console.WriteLine("=");
 			Console.WriteLine("= OS: " + RuntimeInformation.OSDescription);
+			Console.WriteLine("= SDK: " + RuntimeInformation.FrameworkDescription);
 			Console.WriteLine("= Number of processors: " + Environment.ProcessorCount);
 			Console.WriteLine("=");
 			Console.WriteLine("= Listening on: " + prefix);
