@@ -83,7 +83,6 @@ namespace io.github.crisstanza.csharputils.service
 				Console.WriteLine("Server stop!");
 			});
 			mainThread.Start();
-
 		}
 		public void Stop()
 		{
