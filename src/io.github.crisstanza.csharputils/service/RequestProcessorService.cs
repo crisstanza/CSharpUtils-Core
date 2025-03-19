@@ -208,10 +208,20 @@ namespace io.github.crisstanza.csharputils.service
 		}
 		private string ResolveVariables(string contents)
 		{
-			contents = contents.Replace("${version}", Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
+			contents = contents.Replace("${version}", Version());
 			return contents;
 		}
-		public HttpListenerUtils.OutputBody FaviconIco()
+        public static string Version()
+        {
+            string version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+            int index = version.IndexOf('+');
+            if (index >= 0)
+            {
+                version = version[..index];
+            }
+            return version;
+        }
+        public HttpListenerUtils.OutputBody FaviconIco()
 		{
 			string currentPath = fileSystemUtils.CurrentPath();
 			string icon = "favicon.ico";
